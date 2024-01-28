@@ -1,0 +1,73 @@
+To make the FCK editor work with the formhandler, I had to change the following things:
+
+Changed the config so that all PHP browsers and connectors are used.
+
+
+In the file /editor/filemanager/upload/php/config.php
+
+Line 24: Enable file uploading
+------------------------------
+$Config['Enabled'] = false ;
+into
+$Config['Enabled'] = true ;
+
+
+Line 27: Remove the default dir where the files are uploaded
+------------------------------------------------------------
+$Config['UserFilesPath'] = '/UserFiles/' ;
+into
+$Config['UserFilesPath'] = '' ;
+
+
+In the file /editor/filemanager/browser/default/connectors/php/config.php:
+
+
+Line 24: Enable file browsing
+-----------------------------
+$Config['Enabled'] = false ;
+into
+$Config['Enabled'] = true ;
+
+
+We have to remove the var $Config['UserFilesPath'] otherwise it will not
+use the serverpath we are setting with formhandler.
+
+
+Line 27: Remove the var $Config['UserFilesPath']
+------------------------------------------------
+$Config['UserFilesPath'] = '/UserFiles/';
+into
+// $Config['UserFilesPath'] = '/UserFiles/';
+
+
+In the file /editor/filemanager/browser/default/connectors/php/io.php:
+
+
+Line 23: Changed the if statement
+-------------------------------------
+if ( $resourceType == '')
+into
+if ( true || $resourceType == '' )
+
+
+
+Line 37: Removed $resourceType so that there are no  "Image", "Flash", "Media" and "File" dirs are made.
+------------------------------------------------------------------
+$sResourceTypePath = $GLOBALS["UserFilesDirectory"] . $resourceType . '/' ;
+changed into
+$sResourceTypePath = $GLOBALS["UserFilesDirectory"];// . $resourceType . '/' ;
+
+
+I've also changed the FCKeditor dialog:
+FCKeditor\editor\dialog\fck_about.html (Added FH compatible message)
+
+
+At last I've removed all dirs starting with a _ (these are not needed) and I've removed all
+other connectors and browsers except PHP. (So that the package is smaller)
+
+
+Cheers,
+
+--Teye Heimans (info@formhandler.net)
+
+http://www.formhandler.net
